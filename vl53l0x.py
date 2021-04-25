@@ -387,11 +387,15 @@ class VL53L0X:
     def _calibrate(self, vhv_init_byte):
         self._register(_SYSRANGE_START, 0x01 | vhv_init_byte)
         for timeout in range(_IO_TIMEOUT):
-            if self._register(_RESULT_INTERRUPT_STATUS) & 0x07:
-                break
+            try:
+                inter_status = self._register(_RESULT_INTERRUPT_STATUS)
+                if inter_status & 0x07:
+                    break
+            except OSError:
+                utime.sleep_ms(timeout)
             utime.sleep_ms(1)
         else:
-            raise TimeoutError()
+            raise TimeoutError("Is XShut pulled up")
         self._register(_INTERRUPT_CLEAR, 0x01)
         self._register(_SYSRANGE_START, 0x00)
 
