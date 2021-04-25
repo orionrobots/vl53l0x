@@ -170,6 +170,16 @@ class VL53L0X:
             self._register(register, value)
 
     def init(self, power2v8=True):
+        # validate in the same way the adafruit code does
+        if (
+            self._register(0xC0) != 0xEE
+            or self._register(0xC1) != 0xAA
+            or self._register(0xC2) != 0x10
+        ):
+            raise RuntimeError(
+                "Failed to find expected ID register values. Check wiring!"
+            )
+
         self._flag(_EXTSUP_HV, 0, power2v8)
 
         # I2C standard mode
