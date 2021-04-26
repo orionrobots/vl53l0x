@@ -103,7 +103,7 @@ VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV = const(0x89)
 
 ALGO_PHASECAL_LIM = const(0x30)
 ALGO_PHASECAL_CONFIG_TIMEOUT = const(0x30)
-
+TBOOT = 1200 # microseconds
 
 class TimeoutError(RuntimeError):
     pass
@@ -686,3 +686,21 @@ class VL53L0X:
         self._register(SYSTEM_INTERRUPT_CLEAR, 0x01)
         self._register(SYSRANGE_START, 0x00)
         return True
+
+def setup_tofl_device(i2c, timing_budget, pre_range, final_range):
+    tofl = VL53L0X(i2c)
+    # initialise timing budget
+    # the measuring_timing_budget is a value in ms, the longer the budget, the more accurate the reading.
+    #budget_0 = tof.measurement_timing_budget_us
+    tofl.set_measurement_timing_budget(timing_budget)
+    # Set VCSel
+    # Sets the VCSEL (vertical cavity surface emitting laser) pulse period for the
+    # given period type (VL53L0X::VcselPeriodPreRange or VL53L0X::VcselPeriodFinalRange)
+    # to the given value (in PCLKs). Longer periods increase the potential range of the sensor.
+    # Valid values are even numbers only pre = 18,12 and final 14, 8:
+    # tof.set_Vcsel_pulse_period(tof.vcsel_period_type[0], 18)
+    tofl.set_Vcsel_pulse_period(VL53L0X.vcsel_period_type[0], pre_range)
+
+    # tof.set_Vcsel_pulse_period(tof.vcsel_period_type[1], 14)
+    tofl.set_Vcsel_pulse_period(VL53L0X.vcsel_period_type[1], final_range)
+    return tofl
