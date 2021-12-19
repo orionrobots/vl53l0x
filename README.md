@@ -17,6 +17,10 @@ The tof_test demo will continuously print out readings from the sensor, but be s
 
 ---
 
+## How to use these files
+
+Load up your favourite MicroPython editor (I prefer [VS code](https://code.visualstudio.com/) or [Thonny](https://www.thonny.org)), then upload the `vl53l0x.py` file to the Pico, and then the `tof_test.py` file. Once you've uploaded these you can run them in Thonny and it will measure the distance and print it out to the REPL console.
+
 Happy Laser-based Measuring!
 
 Kevin McAleer, 
@@ -24,5 +28,5 @@ March 2021
 
 ## Connecting the Pico
 
-This should be connected to one of the I2C busses. If the board you are using comes with an XSHUT pin,
+This should be connected to one of the I2C buses. If the board you are using comes with an XSHUT pin,
 this should be connected (or pulled up) to the positive rail.
